@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulario del Campus</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px;
+      background-color: #f9f9f9;
+    }
+    .hidden {
+      display: none;
+    }
+    iframe {
+      width: 100%;
+      max-width: 800px;
+      height: 800px;
+      border: none;
+    }
+    #ipInfo {
+      margin: 20px 0;
+      font-size: 1.2em;
+      color: #555;
+    }
+    #mensaje {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Acceso al Formulario de Encuesta</h1>
+  <div id="ipInfo">Detectando tu dirección IP...</div>
+
+  <div id="formulario" class="hidden">
+    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfj2Vj7vgbMpBnAQ-sj5ILZ3Oezs_bbqIol6Umm8aqZR0xaDw/viewform?embedded=true">
+      Cargando…
+    </iframe>
+  </div>
+
+  <div id="mensaje" class="hidden">
+    <p>Este formulario solo está disponible dentro del campus universitario.</p>
+  </div>
+
+  <script>
+    fetch('https://ipinfo.io/json?token=3c00e7a8930151')
+      .then(response => response.json())
+      .then(data => {
+        const ip = data.ip;
+        document.getElementById('ipInfo').textContent = `Bienvenidos`;
+        
+        const octetos = ip.split('.');
+        
+        // Verificar si pertenece al rango 192.188.49.0/24
+        if (octetos[0] === '192' && octetos[1] === '188' && octetos[2] === '49') {
+          document.getElementById('formulario').classList.remove('hidden');
+        } else {
+          document.getElementById('mensaje').classList.remove('hidden');
+        }
+      })
+      .catch(error => {
+        console.error('Error al obtener la IP:', error);
+        document.getElementById('ipInfo').textContent = "No se pudo detectar tu dirección IP.";
+        document.getElementById('mensaje').classList.remove('hidden');
+      });
+  </script>
+</body>
+</html>

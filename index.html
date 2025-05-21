@@ -24,8 +24,7 @@
         </div>
 
         <div id="formulario" class="hidden">
-            <iframe
-                src="https://docs.google.com/forms/d/e/1FAIpQLSfj2Vj7vgbMpBnAQ-sj5ILZ3Oezs_bbqIol6Umm8aqZR0xaDw/viewform?embedded=true">
+            <iframe id="formIframe" src="" allowfullscreen>
                 Cargando…
             </iframe>
         </div>
@@ -52,6 +51,28 @@
                 // Verificar si pertenece al rango 192.188.49.0/24
                 if (octetos[0] === '192' && octetos[1] === '188' && octetos[2] === '49') {
                     document.getElementById('formulario').classList.remove('hidden');
+                    // Armar la URL del formulario en partes con nombres menos evidentes
+                    const b1 = "https://";
+                    const b2 = "docs.";
+                    const b3 = "google.";
+                    const b4 = "com/";
+                    const b5 = "forms/";
+                    const b6 = "d/";
+                    const b7 = "e/";
+                    const base = b1 + b2 + b3 + b4 + b5 + b6 + b7;
+                    const segA = "1FAIpQLS";
+                    const segB = "fj2Vj7v";
+                    const segC = "gbMpBnA";
+                    const segD = "Q-sj5IL";
+                    const segE = "Z3Oezs_";
+                    const segF = "bbqIol6";
+                    const segG = "Umm8aqZ";
+                    const segH = "R0xaDw";
+                    const segI = "";
+                    const segJ = "";
+                    const formId = segA + segB + segC + segD + segE + segF + segG + segH + segI + segJ;
+                    const params = "/viewform?embedded=true";
+                    document.getElementById('formIframe').src = base + formId + params;
                 } else {
                     document.getElementById('mensaje').classList.remove('hidden');
                     document.getElementById('detalleMensaje').textContent =

@@ -1,71 +1,72 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Formulario del Campus</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 40px;
-      background-color: #f9f9f9;
-    }
-    .hidden {
-      display: none;
-    }
-    iframe {
-      width: 100%;
-      max-width: 800px;
-      height: 800px;
-      border: none;
-    }
-    #ipInfo {
-      margin: 20px 0;
-      font-size: 1.2em;
-      color: #555;
-    }
-    #mensaje {
-      color: red;
-      font-weight: bold;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Control de Asistencia - Campus</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-  <h1>Acceso al Formulario de control de asistencia  </h1>
-    <h2>para el 14 de mayo de 2025</h2>
-  <div id="ipInfo">Detectando tu dirección IP...</div>
+    <div class="container">
+        <h1 style="margin-bottom: 6px;">Universidad Nacional de Loja</h1>
+        <h2 style="margin-top: 0; margin-bottom: 18px; font-size:1.1em; color:#418E3A;">
+            Facultad de la Energía las Industrias y los Recursos Naturales No Renovables
+        </h2>
+        <h1>Control de Asistencia</h1>
+        <div id="ipInfo">Detectando tu dirección IP...</div>
+        <div id="hostInfo" style="display:none"></div>
 
-  <div id="formulario" class="hidden">
-    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfj2Vj7vgbMpBnAQ-sj5ILZ3Oezs_bbqIol6Umm8aqZR0xaDw/viewform?embedded=true">
-      Cargando…
-    </iframe>
-  </div>
+        <div id="mensaje" class="hidden">
+            <p>Este formulario solo está disponible dentro del campus universitario.<br>
+            <span id="detalleMensaje"></span></p>
+        </div>
 
-  <div id="mensaje" class="hidden">
-    <p>Este formulario solo está disponible dentro del campus universitario.</p>
-  </div>
+        <div id="formulario" class="hidden">
+            <iframe
+                src="https://docs.google.com/forms/d/e/1FAIpQLSfj2Vj7vgbMpBnAQ-sj5ILZ3Oezs_bbqIol6Umm8aqZR0xaDw/viewform?embedded=true">
+                Cargando…
+            </iframe>
+        </div>
+        <footer style="margin-top:32px; font-size:0.95em; color:#418E3A;">
+            &copy; Universidad Nacional de Loja - Facultad de la Energía, las Industrias y los Recursos Naturales No Renovables
+        </footer>
+    </div>
+    <script>
+        fetch('https://ipinfo.io/json?token=3c00e7a8930151')
+            .then(response => response.json())
+            .then(data => {
+                const ip = data.ip;
+                const hostname = data.hostname;
+                document.getElementById('ipInfo').textContent = `Tu dirección IP: ${ip}`;
+                if (hostname && hostname !== '') {
+                    document.getElementById('hostInfo').textContent = `Nombre de host: ${hostname}`;
+                    document.getElementById('hostInfo').style.display = '';
+                } else {
+                    document.getElementById('hostInfo').style.display = 'none';
+                }
 
-  <script>
-    fetch('https://ipinfo.io/json?token=3c00e7a8930151')
-      .then(response => response.json())
-      .then(data => {
-        const ip = data.ip;
-        document.getElementById('ipInfo').textContent = `Bienvenidos`;
-        
-        const octetos = ip.split('.');
-        
-        // Verificar si pertenece al rango 192.188.49.0/24
-        if (octetos[0] === '192' && octetos[1] === '188' && octetos[2] === '49') {
-          document.getElementById('formulario').classList.remove('hidden');
-        } else {
-          document.getElementById('mensaje').classList.remove('hidden');
-        }
-      })
-      .catch(error => {
-        console.error('Error al obtener la IP:', error);
-        document.getElementById('ipInfo').textContent = "No se pudo detectar tu dirección IP.";
-        document.getElementById('mensaje').classList.remove('hidden');
-      });
-  </script>
+                const octetos = ip.split('.');
+
+                // Verificar si pertenece al rango 192.188.49.0/24
+                if (octetos[0] === '192' && octetos[1] === '188' && octetos[2] === '49') {
+                    document.getElementById('formulario').classList.remove('hidden');
+                } else {
+                    document.getElementById('mensaje').classList.remove('hidden');
+                    document.getElementById('detalleMensaje').textContent =
+                        "No estás conectado a la red del campus universitario. Por favor, conéctate a la red institucional para registrar tu asistencia.";
+                }
+            })
+            .catch(error => {
+                console.error('Error al obtener la IP:', error);
+                document.getElementById('ipInfo').textContent = "No se pudo detectar tu dirección IP.";
+                document.getElementById('hostInfo').style.display = 'none';
+                document.getElementById('mensaje').classList.remove('hidden');
+                document.getElementById('detalleMensaje').textContent =
+                    "No se pudo obtener tu información de red. Por favor, verifica tu conexión.";
+            });
+    </script>
 </body>
+
 </html>
